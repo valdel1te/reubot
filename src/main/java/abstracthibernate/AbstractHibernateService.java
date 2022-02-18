@@ -29,5 +29,13 @@ public abstract class AbstractHibernateService<Entity, Id extends Serializable> 
     public List<Entity> getList() {
         return dao.getList();
     }
+
+    public boolean exists(String attribute, Long value) {
+        return dao.exists(attribute, value);
+    }
+
+    public boolean exists(String attribute, String value) {
+        return dao.exists(attribute, value);
+    }
 }
 

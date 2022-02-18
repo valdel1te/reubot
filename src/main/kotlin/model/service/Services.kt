@@ -2,24 +2,35 @@ package model.service
 
 import abstracthibernate.AbstractHibernateService
 
-import model.data.dao.ClientDao
-import model.data.dao.PlatformDao
-import model.data.dao.PlatformPropertyDao
-import model.data.dao.PropertyDao
-import model.data.entity.Client
-import model.data.entity.Platform
-import model.data.entity.PlatformProperty
-import model.data.entity.Property
+import model.data.dao.*
+import model.data.entity.*
 import org.hibernate.SessionFactory
 
 class ClientService(sessionFactory: SessionFactory) :
-    AbstractHibernateService<Client, Long>(ClientDao(sessionFactory))
+    AbstractHibernateService<Client, Long>(ClientDao(sessionFactory)) {
+    private val clientDao = ClientDao(sessionFactory)
+
+    fun getByChatId(chatId: Long): Client =
+        clientDao.getByChatId(chatId)
+}
 
 class PlatformService(sessionFactory: SessionFactory) :
     AbstractHibernateService<Platform, Long>(PlatformDao(sessionFactory))
 
 class PropertyService(sessionFactory: SessionFactory) :
-    AbstractHibernateService<Property, Long>(PropertyDao(sessionFactory))
+    AbstractHibernateService<Property, Long>(PropertyDao(sessionFactory)) {
+
+    private val propertyDao = PropertyDao(sessionFactory)
+
+    fun getPropertiesValues(clientId: Long): List<HashMap<String, String>> =
+        propertyDao.getPropertiesValues(clientId)
+}
 
 class PlatformPropertyService(sessionFactory: SessionFactory) :
-    AbstractHibernateService<PlatformProperty, Long>(PlatformPropertyDao(sessionFactory))
+    AbstractHibernateService<PlatformProperty, Long>(PlatformPropertyDao(sessionFactory)) {
+
+    private val platformPropertyDao = PlatformPropertyDao(sessionFactory)
+
+    fun getByName(name: String): PlatformProperty =
+        platformPropertyDao.getByName(name)
+}

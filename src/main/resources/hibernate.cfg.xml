@@ -7,13 +7,11 @@
         <property name="connection.password">admin</property>
         <property name="dialect">org.hibernate.dialect.PostgreSQL94Dialect</property>
         <property name="show_sql">true</property>
+        <property name="current_session_context_class">thread</property>
 
-        <mapping class="model.data.entity.ReuGroup"/>
+        <mapping class="model.data.entity.Client"/>
         <mapping class="model.data.entity.Platform"/>
-        <mapping class="model.data.entity.MainData"/>
-        <mapping class="model.data.entity.DiscordData"/>
-        <mapping class="model.data.entity.TelegramData"/>
-        <mapping class="model.data.entity.VKData"/>
-        <mapping class="model.data.entity.Feedback"/>
+        <mapping class="model.data.entity.PlatformProperty"/>
+        <mapping class="model.data.entity.Property"/>
     </session-factory>
 </hibernate-configuration>

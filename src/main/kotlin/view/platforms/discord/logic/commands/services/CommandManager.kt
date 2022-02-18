@@ -2,12 +2,14 @@ package view.platforms.discord.logic.commands.services
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import org.hibernate.SessionFactory
+import view.platforms.discord.logic.commands.settings.GetConfig
 
 class CommandManager {
     private val commands = arrayListOf<Command>()
 
     init {
         //TODO: add commands
+        addCommand(GetConfig())
     }
 
     private fun addCommand(command: Command) {
@@ -38,5 +40,7 @@ class CommandManager {
 
         val args = splitContent.subList(1, splitContent.size)
         val ctx = CommandContext(event, args, sessionFactory)
+
+        command.handle(ctx)
     }
 }

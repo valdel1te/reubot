@@ -8,6 +8,7 @@ import org.hibernate.cfg.Configuration
 import org.slf4j.LoggerFactory
 import view.botservices.GetProperty
 import view.platforms.discord.logic.listeners.CommandListener
+import view.platforms.discord.logic.listeners.GuildListener
 
 object DiscordBot {
     private val token = GetProperty.key("discord_token")
@@ -18,10 +19,11 @@ object DiscordBot {
         val sessionFactory = Configuration().configure().buildSessionFactory()
 
         jda.run {
-           presence.setStatus(OnlineStatus.ONLINE)
-           presence.activity = Activity.watching("rea.perm")
+            presence.setStatus(OnlineStatus.ONLINE)
+            presence.activity = Activity.watching("rea.perm")
 
-           addEventListener(CommandListener(sessionFactory))
+            addEventListener(CommandListener(sessionFactory))
+            addEventListener(GuildListener(sessionFactory))
         }
 
         logger.info("${jda.selfUser} STARTED")

@@ -8,6 +8,7 @@ open class Client {
 
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     open var id: Long? = null
 
@@ -23,6 +24,7 @@ open class Platform {
 
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     open var id: Long? = null
 
@@ -38,6 +40,7 @@ open class PlatformProperty {
 
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     open var id: Long? = null
 
@@ -45,7 +48,8 @@ open class PlatformProperty {
     @OneToOne
     open var platformId: Platform? = null
 
-
+    @Column(name = "property_name")
+    open var propertyName: String? = null
 }
 
 @Entity
@@ -54,6 +58,7 @@ open class Property {
 
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     open var id: Long? = null
 
