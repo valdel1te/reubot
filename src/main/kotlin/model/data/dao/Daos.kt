@@ -3,7 +3,6 @@ package model.data.dao
 import abstracthibernate.AbstractHibernateDao
 import model.data.entity.*
 import org.hibernate.SessionFactory
-import org.hibernate.transform.Transformers
 import javax.persistence.NoResultException
 
 
@@ -37,10 +36,10 @@ class PropertyDao(sessionFactory: SessionFactory) :
     fun getPropertiesValues(clientId: Long): List<HashMap<String, String>> {
         try {
             sessionFactory.openSession().use { session ->
-                val sql = "SELECT new map (pp.propertyName, p.value) " +
-                        "FROM Property p " +
-                        "JOIN PlatformProperty pp ON p.platformPropId = pp.id " +
-                        "AND p.clientId = $clientId"
+                val sql = "select new map (pp.propertyName, p.value) " +
+                        "from Property p " +
+                        "join PlatformProperty pp on p.platformPropId = pp.id " +
+                        "and p.clientId = $clientId"
                 val query = session.createQuery(sql)
 
                 return query.resultList as List<HashMap<String, String>>
@@ -48,6 +47,27 @@ class PropertyDao(sessionFactory: SessionFactory) :
         } catch (e: NoResultException) {
             return emptyList()
         }
+    }
+
+    fun getValueByClientAndPlatformPropId(
+        clientId: Long,
+        platformPropId: Long
+    ): String {
+
+        val property = Property()
+        try {
+            sessionFactory.openSession().use { session ->
+                val sql = "from Property p " +
+                        "where p.clientId = $clientId and p.platformPropId = $platformPropId"
+                val query = session.createQuery(sql)
+
+                property.value = (query.singleResult as Property).value
+            }
+        } catch (e: NoResultException) {
+            property.value = "none"
+        }
+
+        return property.value!!
     }
 }
 

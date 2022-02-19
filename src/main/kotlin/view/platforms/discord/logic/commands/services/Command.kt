@@ -7,6 +7,10 @@ interface Command {
 
     fun getHelp(): String
 
+    fun needAdministratorPermission(): Boolean {
+        return false
+    }
+
     fun getAliases(): List<String> {
         return listOf()
     }

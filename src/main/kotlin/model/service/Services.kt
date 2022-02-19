@@ -24,6 +24,9 @@ class PropertyService(sessionFactory: SessionFactory) :
 
     fun getPropertiesValues(clientId: Long): List<HashMap<String, String>> =
         propertyDao.getPropertiesValues(clientId)
+
+    fun getValueByClientAndPlatformPropId(clientId: Long, platformPropId: Long): String =
+        propertyDao.getValueByClientAndPlatformPropId(clientId, platformPropId)
 }
 
 class PlatformPropertyService(sessionFactory: SessionFactory) :

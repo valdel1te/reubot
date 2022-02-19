@@ -3,7 +3,6 @@ package view.botservices
 import model.data.entity.*
 import model.service.*
 import org.hibernate.SessionFactory
-import org.hibernate.cfg.Configuration
 import org.slf4j.LoggerFactory
 
 class DatabaseOperations(private val sessionFactory: SessionFactory) {
@@ -14,7 +13,17 @@ class DatabaseOperations(private val sessionFactory: SessionFactory) {
 
     private val logger = LoggerFactory.getLogger(DatabaseOperations::class.java)
 
-    fun getClientsDiscordProperties(clientChatId: Long): HashMap<String, String> {
+    fun getDiscordPropertyValue(
+        propertyName: String,
+        clientChatId: Long,
+    ): String {
+        val platformPropertyId = platformPropertyService.getByName(propertyName).id
+        val clientId = clientService.getByChatId(clientChatId).id
+
+        return propertyService.getValueByClientAndPlatformPropId(clientId!!, platformPropertyId!!)
+    }
+
+    fun getClientDiscordProperties(clientChatId: Long): HashMap<String, String> {
         val configList = HashMap<String, String>()
         val client = clientService.getByChatId(clientChatId)
         val config = propertyService.getPropertiesValues(client.id!!).toMutableList()
@@ -68,9 +77,4 @@ class DatabaseOperations(private val sessionFactory: SessionFactory) {
 
     fun clientIsExists(chatId: Long): Boolean =
         clientService.exists("client_chat_id", chatId)
-}
-
-fun main() { //TODO remove main here
-    DatabaseOperations(Configuration().configure().buildSessionFactory()).addNewClient(620682596564598797); println("1")
-    DatabaseOperations(Configuration().configure().buildSessionFactory()).addNewClient(671379555897966630); println("2")
 }

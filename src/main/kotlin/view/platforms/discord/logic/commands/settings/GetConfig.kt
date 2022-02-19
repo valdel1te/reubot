@@ -10,7 +10,7 @@ import java.util.*
 class GetConfig : Command {
     override fun handle(ctx: CommandContext) {
         val dbo = DatabaseOperations(ctx.sessionFactory)
-        val configList = dbo.getClientsDiscordProperties(ctx.event.guild.idLong)
+        val configList = dbo.getClientDiscordProperties(ctx.event.guild.idLong)
 
         val stringBuilder = StringBuilder()
         for ((key, value) in configList) {

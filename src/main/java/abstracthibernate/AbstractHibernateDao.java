@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-
+// TODO: remove session factory from services
 public abstract class AbstractHibernateDao<Entity, Key extends Serializable> {
 
     protected final SessionFactory sessionFactory;
@@ -76,6 +76,26 @@ public abstract class AbstractHibernateDao<Entity, Key extends Serializable> {
     public List<Entity> getList() {
         try (final Session session = sessionFactory.openSession()) {
             return session.getSession().createQuery("from " + entity.getClass().getName()).list();
+        }
+    }
+
+    public boolean exists(String attribute, Long value) {
+        try (final Session session = sessionFactory.openSession()) {
+            return session.getSession()
+                    .createQuery("from " + entity.getClass().getName() + " where " + attribute + " = :value")
+                    .setParameter("value", value)
+                    .setMaxResults(1)
+                    .uniqueResult() != null;
+        }
+    }
+
+    public boolean exists(String attribute, String value) {
+        try (final Session session = sessionFactory.openSession()) {
+            return session.getSession()
+                    .createQuery("from " + entity.getClass().getName() + " where " + attribute + " = :value")
+                    .setParameter("value", value)
+                    .setMaxResults(1)
+                    .uniqueResult() != null;
         }
     }
 }
