@@ -4,6 +4,7 @@ import abstracthibernate.AbstractHibernateDao
 import model.data.entity.*
 import org.hibernate.SessionFactory
 import javax.persistence.NoResultException
+import javax.transaction.Transactional
 
 
 class ClientDao(sessionFactory: SessionFactory) :
@@ -36,11 +37,11 @@ class PropertyDao(sessionFactory: SessionFactory) :
     fun getPropertiesValues(clientId: Long): List<HashMap<String, String>> {
         try {
             sessionFactory.openSession().use { session ->
-                val sql = "select new map (pp.propertyName, p.value) " +
+                val hql = "select new map (pp.propertyName, p.value) " +
                         "from Property p " +
                         "join PlatformProperty pp on p.platformPropId = pp.id " +
                         "and p.clientId = $clientId"
-                val query = session.createQuery(sql)
+                val query = session.createQuery(hql)
 
                 return query.resultList as List<HashMap<String, String>>
             }
@@ -57,9 +58,9 @@ class PropertyDao(sessionFactory: SessionFactory) :
         val property = Property()
         try {
             sessionFactory.openSession().use { session ->
-                val sql = "from Property p " +
+                val hql = "from Property p " +
                         "where p.clientId = $clientId and p.platformPropId = $platformPropId"
-                val query = session.createQuery(sql)
+                val query = session.createQuery(hql)
 
                 property.value = (query.singleResult as Property).value
             }
@@ -68,6 +69,25 @@ class PropertyDao(sessionFactory: SessionFactory) :
         }
 
         return property.value!!
+    }
+
+    fun updateValueByClientAndPlatformPropId(
+        clientId: Long,
+        platformPropId: Long,
+        newValue: String
+    ) {
+        try {
+            sessionFactory.openSession().use { session ->
+                session.beginTransaction()
+                val hql = "update Property p set p.value = '$newValue' " +
+                        "where p.clientId = $clientId and p.platformPropId = $platformPropId"
+
+                session.createQuery(hql).executeUpdate()
+                session.transaction.commit()
+            }
+        } catch (e: NoResultException) {
+            return
+        }
     }
 }
 

@@ -13,14 +13,28 @@ class DatabaseOperations(private val sessionFactory: SessionFactory) {
 
     private val logger = LoggerFactory.getLogger(DatabaseOperations::class.java)
 
-    fun getDiscordPropertyValue(
+    fun updateDiscordPropertyValue(
         propertyName: String,
         clientChatId: Long,
-    ): String {
-        val platformPropertyId = platformPropertyService.getByName(propertyName).id
-        val clientId = clientService.getByChatId(clientChatId).id
+        newValue: String
+    ) {
+        val platformPropertyId = platformPropertyService.getByName(propertyName).id!!
+        val clientId = clientService.getByChatId(clientChatId).id!!
 
-        return propertyService.getValueByClientAndPlatformPropId(clientId!!, platformPropertyId!!)
+        val oldValue = propertyService.getValueByClientAndPlatformPropId(clientId, platformPropertyId)
+
+        propertyService.updateValueByClientAndPlatformPropId(clientId, platformPropertyId, newValue)
+        logger.info("Client <$clientChatId> updated [${propertyName.uppercase()}]: [$oldValue] -> [$newValue]")
+    }
+
+    fun getDiscordPropertyValue(
+        propertyName: String,
+        clientChatId: Long
+    ): String {
+        val platformPropertyId = platformPropertyService.getByName(propertyName).id!!
+        val clientId = clientService.getByChatId(clientChatId).id!!
+
+        return propertyService.getValueByClientAndPlatformPropId(clientId, platformPropertyId)
     }
 
     fun getClientDiscordProperties(clientChatId: Long): HashMap<String, String> {

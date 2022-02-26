@@ -27,6 +27,9 @@ class PropertyService(sessionFactory: SessionFactory) :
 
     fun getValueByClientAndPlatformPropId(clientId: Long, platformPropId: Long): String =
         propertyDao.getValueByClientAndPlatformPropId(clientId, platformPropId)
+
+    fun updateValueByClientAndPlatformPropId(clientId: Long, platformPropId: Long, newValue: String) =
+        propertyDao.updateValueByClientAndPlatformPropId(clientId, platformPropId, newValue)
 }
 
 class PlatformPropertyService(sessionFactory: SessionFactory) :
