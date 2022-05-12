@@ -5,7 +5,7 @@ import model.service.*
 import org.hibernate.SessionFactory
 import org.slf4j.LoggerFactory
 
-class DatabaseOperations(private val sessionFactory: SessionFactory) {
+class DatabaseOperations(sessionFactory: SessionFactory) {
     private val clientService = ClientService(sessionFactory)
     private val platformService = PlatformService(sessionFactory)
     private val propertyService = PropertyService(sessionFactory)

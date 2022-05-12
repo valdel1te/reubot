@@ -2,10 +2,10 @@ package view.platforms.discord.logic.commands.settings
 
 import net.dv8tion.jda.api.EmbedBuilder
 import view.botservices.DatabaseOperations
-import view.platforms.discord.logic.commands.services.Command
-import view.platforms.discord.logic.commands.services.CommandContext
+import view.botservices.DateFormatter
+import view.platforms.discord.logic.services.commandmanagment.Command
+import view.platforms.discord.logic.services.commandmanagment.CommandContext
 import java.awt.Color
-import java.util.*
 
 class GetConfig : Command {
     override fun handle(ctx: CommandContext) {
@@ -22,7 +22,7 @@ class GetConfig : Command {
             setAuthor("Настройки ${ctx.event.guild.name}")
             setTitle("Для уточения значения настроек указывайте команду `config info`")
             addField("", stringBuilder.toString(), false)
-            setFooter("Запрошено пользователем ${ctx.event.author.asTag} | ${Calendar.getInstance().time}")
+            setFooter("Запрошено пользователем ${ctx.event.author.asTag} | ${DateFormatter.today()}")
         }
 
         ctx.event.channel.sendMessageEmbeds(eb.build()).queue()
@@ -30,7 +30,4 @@ class GetConfig : Command {
 
     override fun getName(): String =
         "config"
-
-    override fun getHelp(): String =
-        "get config ept"
 }

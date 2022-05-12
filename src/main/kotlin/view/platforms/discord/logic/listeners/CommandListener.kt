@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.hibernate.SessionFactory
 import view.botservices.DatabaseOperations
-import view.platforms.discord.logic.commands.services.CommandManager
+import view.platforms.discord.logic.services.commandmanagment.CommandManager
 
 class CommandListener(private val sessionFactory: SessionFactory) : ListenerAdapter() {
     private val manager = CommandManager()
