@@ -6,7 +6,7 @@ import org.hibernate.SessionFactory
 import view.botservices.DatabaseOperations
 import view.platforms.discord.logic.services.commandmanagment.CommandManager
 
-class CommandListener(private val sessionFactory: SessionFactory) : ListenerAdapter() {
+class CommandListener() : ListenerAdapter() {
     private val manager = CommandManager()
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
@@ -14,11 +14,11 @@ class CommandListener(private val sessionFactory: SessionFactory) : ListenerAdap
             return
 
         val content = event.message.contentRaw
-        val prefix = DatabaseOperations(sessionFactory)
+        val prefix = DatabaseOperations()
             .getDiscordPropertyValue("prefix", event.guild.idLong)
 
         if (content.startsWith(prefix)) {
-            manager.handle(event, prefix, sessionFactory)
+            manager.handle(event, prefix)
         }
     }
 

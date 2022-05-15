@@ -1,6 +1,7 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.10'
     id 'java'
+    id "org.jetbrains.kotlin.plugin.serialization" version "1.4.31"
 }
 
 group 'org.reu'
@@ -16,7 +17,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 
-    implementation 'net.dv8tion:JDA:5.0.0-alpha.2'
+    implementation 'net.dv8tion:JDA:5.0.0-alpha.9'
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'io.github.kotlin-telegram-bot.kotlin-telegram-bot:telegram:6.0.6'
     implementation 'org.postgresql:postgresql:42.1.4'
@@ -26,6 +27,9 @@ dependencies {
     }
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2'
     implementation 'org.jsoup:jsoup:1.14.3'
+    implementation "io.ktor:ktor-client-core:1.6.7"
+    implementation "io.ktor:ktor-client-cio:1.6.7"
+    implementation "io.ktor:ktor-client-serialization:1.6.7"
 }
 
 test {

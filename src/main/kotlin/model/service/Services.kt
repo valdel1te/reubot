@@ -5,22 +5,32 @@ import abstracthibernate.AbstractHibernateService
 import model.data.dao.*
 import model.data.entity.*
 import org.hibernate.SessionFactory
+import org.hibernate.cfg.Configuration
 
-class ClientService(sessionFactory: SessionFactory) :
-    AbstractHibernateService<Client, Long>(ClientDao(sessionFactory)) {
-    private val clientDao = ClientDao(sessionFactory)
+object BuildSession {
+    private val sessionFactory = Configuration().configure().buildSessionFactory()
+
+    fun build(): SessionFactory =
+        sessionFactory
+}
+
+private val SESSION: SessionFactory = BuildSession.build()
+
+class ClientService() :
+    AbstractHibernateService<Client, Long>(ClientDao(SESSION)) {
+    private val clientDao = ClientDao(SESSION)
 
     fun getByChatId(chatId: Long): Client =
         clientDao.getByChatId(chatId)
 }
 
-class PlatformService(sessionFactory: SessionFactory) :
-    AbstractHibernateService<Platform, Long>(PlatformDao(sessionFactory))
+class PlatformService() :
+    AbstractHibernateService<Platform, Long>(PlatformDao(SESSION))
 
-class PropertyService(sessionFactory: SessionFactory) :
-    AbstractHibernateService<Property, Long>(PropertyDao(sessionFactory)) {
+class PropertyService() :
+    AbstractHibernateService<Property, Long>(PropertyDao(SESSION)) {
 
-    private val propertyDao = PropertyDao(sessionFactory)
+    private val propertyDao = PropertyDao(SESSION)
 
     fun getPropertiesValues(clientId: Long): List<HashMap<String, String>> =
         propertyDao.getPropertiesValues(clientId)
@@ -32,10 +42,10 @@ class PropertyService(sessionFactory: SessionFactory) :
         propertyDao.updateValueByClientAndPlatformPropId(clientId, platformPropId, newValue)
 }
 
-class PlatformPropertyService(sessionFactory: SessionFactory) :
-    AbstractHibernateService<PlatformProperty, Long>(PlatformPropertyDao(sessionFactory)) {
+class PlatformPropertyService() :
+    AbstractHibernateService<PlatformProperty, Long>(PlatformPropertyDao(SESSION)) {
 
-    private val platformPropertyDao = PlatformPropertyDao(sessionFactory)
+    private val platformPropertyDao = PlatformPropertyDao(SESSION)
 
     fun getByName(name: String): PlatformProperty =
         platformPropertyDao.getByName(name)

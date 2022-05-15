@@ -1,15 +1,18 @@
 package view.botservices
 
-import model.data.entity.*
-import model.service.*
-import org.hibernate.SessionFactory
+import model.data.entity.Client
+import model.data.entity.Property
+import model.service.ClientService
+import model.service.PlatformPropertyService
+import model.service.PlatformService
+import model.service.PropertyService
 import org.slf4j.LoggerFactory
 
-class DatabaseOperations(sessionFactory: SessionFactory) {
-    private val clientService = ClientService(sessionFactory)
-    private val platformService = PlatformService(sessionFactory)
-    private val propertyService = PropertyService(sessionFactory)
-    private val platformPropertyService = PlatformPropertyService(sessionFactory)
+class DatabaseOperations {
+    private val clientService = ClientService()
+    private val platformService = PlatformService()
+    private val propertyService = PropertyService()
+    private val platformPropertyService = PlatformPropertyService()
 
     private val logger = LoggerFactory.getLogger(DatabaseOperations::class.java)
 
@@ -78,12 +81,12 @@ class DatabaseOperations(sessionFactory: SessionFactory) {
             })
             create(Property().apply {
                 clientId = client
-                platformPropId = platformPropertyService.getByName("channel_id")
+                platformPropId = platformPropertyService.getByName("subchannel_id")
                 value = "none"
             })
             create(Property().apply {
                 clientId = client
-                platformPropId = platformPropertyService.getByName("group")
+                platformPropId = platformPropertyService.getByName("subgroup")
                 value = "none"
             })
         }

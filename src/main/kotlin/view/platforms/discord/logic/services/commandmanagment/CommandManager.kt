@@ -10,7 +10,7 @@ import view.platforms.discord.logic.commands.settings.SetSettings
 import view.platforms.discord.logic.services.embeds.EmbedHelp
 
 class CommandManager {
-    private val commands = arrayListOf<Command>()
+    private val commands = arrayListOf<ICommand>()
 
     init {
         addCommand(GetConfig())
@@ -18,9 +18,9 @@ class CommandManager {
         addCommand(GetSchedule())
     }
 
-    private fun addCommand(command: Command) {
+    private fun addCommand(command: ICommand) {
         val nameExists = commands.stream().anyMatch { alreadyCreatedCommand ->
-            alreadyCreatedCommand.getName().lowercase() == command.getName().lowercase()
+            alreadyCreatedCommand.name().lowercase() == command.name().lowercase()
         }
 
         if (nameExists)
@@ -29,14 +29,14 @@ class CommandManager {
         commands.add(command)
     }
 
-    private fun getCommand(search: String): Command? =
+    private fun getCommand(search: String): ICommand? =
         commands.firstOrNull { command ->
-            command.getName().lowercase() == search.lowercase() || command.getAliases().stream().anyMatch { alias ->
+            command.name().lowercase() == search.lowercase() || command.aliases().stream().anyMatch { alias ->
                 alias.lowercase() == search.lowercase()
             }
         }
 
-    fun handle(event: MessageReceivedEvent, prefix: String, sessionFactory: SessionFactory) {
+    fun handle(event: MessageReceivedEvent, prefix: String) {
         val splitContent = event.message.contentRaw
             .replaceFirst(prefix, "")
             .split("\\s+".toRegex())
@@ -50,19 +50,19 @@ class CommandManager {
             else
                 1
 
-            val helpCommand = getCommand(splitContent[index]) ?: object: Command {
-                override fun getHelp(): EmbedBuilder =
+            val helpCommand = getCommand(splitContent[index]) ?: object: ICommand {
+                override fun help(): EmbedBuilder =
                     EmbedHelp.allCommandsInfo()
             }
 
-            help(helpCommand, channel)
+            callHelp(helpCommand, channel)
             return
         }
 
         val command = getCommand(name) ?: return
 
         val args = splitContent.subList(1, splitContent.size)
-        val ctx = CommandContext(event, args, sessionFactory)
+        val ctx = CommandContext(event, args)
 
         if (command.needAdministratorPermission() && ctx.authorIsNotAdmin())
             return
@@ -71,8 +71,8 @@ class CommandManager {
         command.handle(ctx)
     }
 
-    private fun help(command: Command, channel: MessageChannel) {
+    private fun callHelp(command: ICommand, channel: MessageChannel) {
         channel.sendTyping().queue()
-        channel.sendMessageEmbeds(command.getHelp().build()).queue()
+        channel.sendMessageEmbeds(command.help().build()).queue()
     }
 }

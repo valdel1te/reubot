@@ -3,11 +3,14 @@ package view.platforms.discord.logic.commands.schedule
 import kotlinx.coroutines.runBlocking
 import view.botservices.scheduleoperations.Schedule
 import view.botservices.scheduleoperations.ScheduleApiService
-import view.platforms.discord.logic.services.commandmanagment.Command
+import view.platforms.discord.logic.services.commandmanagment.ICommand
 import view.platforms.discord.logic.services.commandmanagment.CommandContext
 import view.platforms.discord.logic.services.embeds.EmbedSchedule
 
-class GetSchedule : Command {
+class GetSchedule : ICommand {
+    override fun name(): String =
+        "schedule"
+
     override fun handle(ctx: CommandContext) {
         val groupName: String
         val date: String
@@ -33,8 +36,4 @@ class GetSchedule : Command {
             ).build()
         ).queue()
     }
-
-    override fun getName(): String =
-        "schedule"
-
 }

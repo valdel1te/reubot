@@ -7,8 +7,6 @@ import view.botservices.DiscordCommand
 import java.util.stream.Collectors
 
 object EmbedHelp {
-    private val reader = CommandInfoReader()
-
     private fun formatHelpString(command: DiscordCommand): String =
         command.help.replace(";", ".\n")
 
@@ -25,7 +23,7 @@ object EmbedHelp {
             setFooter("Используйте «help» или «h» для получения всех команд | ${DateFormatter.today()}", REU_ICON)
         }
 
-    fun allCommandsInfo(commands: List<DiscordCommand> = reader.getAllDiscordCommands()): EmbedBuilder =
+    fun allCommandsInfo(commands: List<DiscordCommand> = CommandInfoReader().getAllDiscordCommands()): EmbedBuilder =
         EmbedBuilder().apply {
             setColor(HELP_COLOR)
             setTitle("Все доступные команды")
