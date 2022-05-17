@@ -2,12 +2,12 @@ package view.platforms.discord.logic.commands.settings
 
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed
-import view.botservices.DatabaseOperations
-import view.botservices.scheduleoperations.GROUPS
+import view.botservices.GroupFinder
+import view.botservices.IDiscordSetting
 import view.platforms.discord.logic.services.commandmanagment.CommandContext
 import view.platforms.discord.logic.services.embeds.*
 
-val SETTINGS = hashMapOf<String, ISetting>(
+val SETTINGS = hashMapOf<String, IDiscordSetting>(
     "prefix" to PrefixSetting(),
     "subchannel_id" to SubchannelSetting(),
     "subgroup" to SubgroupSetting()
@@ -18,26 +18,7 @@ private val DELETE_OPTION = listOf("delete", "del", "d")
 private fun calledDeleteOption(argument: String): Boolean =
     DELETE_OPTION.find { deleteAlias -> argument == deleteAlias } != null
 
-interface ISetting {
-    val dbo: DatabaseOperations
-        get() = DatabaseOperations()
-
-    fun name(): String
-
-    fun info(): String
-
-    fun aliases(): List<String>
-
-    fun get(ctx: CommandContext): EmbedBuilder
-
-    fun set(ctx: CommandContext): EmbedBuilder
-
-    fun delete(ctx:CommandContext): EmbedBuilder
-
-    fun showError(): EmbedBuilder
-}
-
-class PrefixSetting : ISetting {
+class PrefixSetting : IDiscordSetting {
     override fun name(): String =
         "prefix"
 
@@ -85,7 +66,7 @@ class PrefixSetting : ISetting {
         EmbedError().incorrectSetSetting(REASON_ERROR_PREFIX_LENGTH)
 }
 
-class SubchannelSetting : ISetting {
+class SubchannelSetting : IDiscordSetting {
     override fun name(): String =
         "subchannel_id"
 
@@ -139,7 +120,7 @@ class SubchannelSetting : ISetting {
         EmbedError().incorrectSetSetting(SUBCHANNEL_DOES_NOT_EXISTS)
 }
 
-class SubgroupSetting : ISetting {
+class SubgroupSetting : IDiscordSetting {
     override fun name(): String =
         "subgroup"
 
@@ -171,17 +152,9 @@ class SubgroupSetting : ISetting {
         if (requiredSubGroup.isEmpty())
             return showError()
 
-        val group = GROUPS.firstOrNull { group ->
-            val arg = ctx.args[1]
-            val length = arg.length
-
-            val index = if (arg.replace("-", "").length == 4)
-                2
-            else
-                3
-
-            group.lowercase().contains(arg.substring(0, index).lowercase()) && group.contains(arg.substring(length - 2, length - 1))
-        } ?: return showError()
+        val group = GroupFinder.execute(ctx.args[1])
+        if (group == "none")
+            return showError()
 
         dbo.updateDiscordPropertyValue(name(), ctx.event.guild.idLong, group)
 

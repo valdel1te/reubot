@@ -3,7 +3,7 @@ package view.platforms.discord.logic.services.embeds
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed
 import view.botservices.DateFormatter
-import view.platforms.discord.logic.commands.settings.ISetting
+import view.botservices.IDiscordSetting
 
 class EmbedUserSettings(private val authorMessage: String) {
     fun userAllSettings(
@@ -18,7 +18,7 @@ class EmbedUserSettings(private val authorMessage: String) {
             setFooter("Запрошено пользователем $authorMessage | ${DateFormatter.today()}")
         }
 
-    fun configInfo(settings: HashMap<String, ISetting>): EmbedBuilder =
+    fun configInfo(settings: HashMap<String, IDiscordSetting>): EmbedBuilder =
         EmbedBuilder().apply {
             setColor(SETTINGS_COLOR)
             setTitle("Все возможные настройки")
