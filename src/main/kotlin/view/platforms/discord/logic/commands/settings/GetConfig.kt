@@ -1,6 +1,6 @@
 package view.platforms.discord.logic.commands.settings
 
-import view.botservices.DatabaseOperations
+import view.botservices.database.DiscordDBO
 import view.platforms.discord.logic.services.commandmanagment.ICommand
 import view.platforms.discord.logic.services.commandmanagment.CommandContext
 import view.platforms.discord.logic.services.embeds.EmbedUserSettings
@@ -10,8 +10,8 @@ class GetConfig : ICommand {
         "config"
 
     override fun handle(ctx: CommandContext) {
-        val dbo = DatabaseOperations()
-        val configList = dbo.getClientDiscordProperties(ctx.event.guild.idLong)
+        val dbo = DiscordDBO()
+        val configList = dbo.getClientProperties(ctx.event.guild.idLong)
 
         val stringBuilder = StringBuilder()
         for ((key, value) in configList) {

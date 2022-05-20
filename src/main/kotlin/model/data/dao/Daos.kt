@@ -4,8 +4,6 @@ import abstracthibernate.AbstractHibernateDao
 import model.data.entity.*
 import org.hibernate.SessionFactory
 import javax.persistence.NoResultException
-import javax.transaction.Transactional
-
 
 class ClientDao(sessionFactory: SessionFactory) :
     AbstractHibernateDao<Client, Long>(sessionFactory, Client()) {
@@ -29,7 +27,24 @@ class ClientDao(sessionFactory: SessionFactory) :
 }
 
 class PlatformDao(sessionFactory: SessionFactory) :
-    AbstractHibernateDao<Platform, Long>(sessionFactory, Platform())
+    AbstractHibernateDao<Platform, Long>(sessionFactory, Platform()) {
+
+    fun getIdByName(name: String): Long {
+        val platform = Platform()
+        try {
+            sessionFactory.openSession().use { session ->
+                val hql = "from Platform p where p.name = '$name'"
+                val query = session.createQuery(hql)
+
+                platform.id = (query.singleResult as Platform).id
+            }
+        } catch (e: NoResultException) {
+            platform.id = 0L
+        }
+
+        return platform.id!!
+    }
+}
 
 class PropertyDao(sessionFactory: SessionFactory) :
     AbstractHibernateDao<Property, Long>(sessionFactory, Property()) {
@@ -108,6 +123,28 @@ class PlatformPropertyDao(sessionFactory: SessionFactory) :
             }
         } catch (e: NoResultException) {
             return PlatformProperty().apply { propertyName = "none" }
+        }
+    }
+}
+
+class SubscribeDao(sessionFactory: SessionFactory) :
+    AbstractHibernateDao<Subscribe, Long>(sessionFactory, Subscribe()) {
+
+    fun getRecord(
+        clientId: Long,
+        platformId: Long,
+        groupName: String
+    ): Subscribe {
+        try {
+            sessionFactory.openSession().use { session ->
+                val hql = "from Subscribe s " +
+                        "where s.clientId = $clientId and s.platformId = $platformId and s.group = '$groupName'"
+                val query = session.createQuery(hql)
+
+                return query.singleResult as Subscribe
+            }
+        } catch (e: NoResultException) {
+            return Subscribe().apply { group = "none" }
         }
     }
 }

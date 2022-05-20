@@ -1,5 +1,6 @@
 package model.data.entity
 
+import java.sql.Time
 import javax.persistence.*
 
 @Entity
@@ -75,3 +76,41 @@ open class Property {
 
 
 }
+
+@Entity
+@Table(name = "subscribe")
+open class Subscribe {
+
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    open var id: Long? = null
+
+    @JoinColumn(name = "client_id")
+    @OneToOne
+    open var clientId: Client? = null
+
+    @JoinColumn(name = "platform_id")
+    @OneToOne
+    open var platformId: Platform? = null
+
+    @Column(name = "groupName")
+    open var group: String = ""
+
+    @Column(name = "time")
+    open var time: Time? = null
+
+    @Column(name = "get_update")
+    open var getUpdate: Boolean = false
+
+    override fun toString(): String =
+        "Subscribe(\n" +
+                "id: $id\n" +
+                "cid: $clientId\n" +
+                "pfid: $platformId\n" +
+                "group: $group\n" +
+                "time: $time\n" +
+                "getupd: $getUpdate\n" +
+                ")"
+}
+

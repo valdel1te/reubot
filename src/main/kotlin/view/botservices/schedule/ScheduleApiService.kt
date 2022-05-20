@@ -1,4 +1,4 @@
-package view.botservices.scheduleoperations
+package view.botservices.schedule
 
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -43,8 +43,4 @@ class ScheduleApiService {
 
     //TODO : add more functions (getSchedules() and getNextLesson())
 
-}
-
-suspend fun main() {
-    println(ScheduleApiService().getSchedule("ПКо-41", "14.29.2022"))
 }

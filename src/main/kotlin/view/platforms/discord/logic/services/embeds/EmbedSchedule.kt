@@ -1,8 +1,8 @@
 package view.platforms.discord.logic.services.embeds
 
 import net.dv8tion.jda.api.EmbedBuilder
-import view.botservices.scheduleoperations.*
-import view.botservices.scheduleoperations.TIMINGS
+import view.botservices.schedule.*
+import view.botservices.schedule.TIMINGS
 
 class EmbedSchedule {
     fun withGroupAndDate(group: String, date: String, lessons: Array<Indivisible>): EmbedBuilder =
@@ -25,6 +25,6 @@ class EmbedSchedule {
                 )
             }
 
-            setFooter("schedule rea")
+            setFooter("schedule rea") // todo написать про шапки
         }
 }

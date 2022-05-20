@@ -1,5 +1,7 @@
 import view.platforms.discord.DiscordBot
+import view.platforms.telegram.TelegramBot
 
 fun main() {
-    DiscordBot.start()
+    //DiscordBot.start()
+    TelegramBot.start()
 }

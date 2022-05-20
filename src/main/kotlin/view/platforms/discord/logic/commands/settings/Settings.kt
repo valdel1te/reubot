@@ -30,7 +30,7 @@ class PrefixSetting : IDiscordSetting {
 
     override fun get(ctx: CommandContext): EmbedBuilder {
         val title = "Текущий префикс"
-        val prefix = dbo.getDiscordPropertyValue(name(), ctx.event.guild.idLong)
+        val prefix = dbo.getPropertyValue(name(), ctx.event.guild.idLong)
         val fieldHelp = MessageEmbed.Field(
             "Для смены префикса:",
             "`${prefix}settings prefix [НОВЫЙ ПРЕФИКС]`",
@@ -44,20 +44,20 @@ class PrefixSetting : IDiscordSetting {
         if (calledDeleteOption(ctx.args[1]))
             return delete(ctx)
 
-        val oldPrefix = dbo.getDiscordPropertyValue(name(), ctx.event.guild.idLong)
+        val oldPrefix = dbo.getPropertyValue(name(), ctx.event.guild.idLong)
         val newPrefix = ctx.args[1]
         if (newPrefix.length > 3 || newPrefix.isEmpty())
             return showError()
 
-        dbo.updateDiscordPropertyValue(name(), ctx.event.guild.idLong, newPrefix)
+        dbo.setPropertyValue(name(), ctx.event.guild.idLong, newPrefix)
 
         return EmbedUserSettings(ctx.event.author.asTag).setSetting(oldPrefix, newPrefix)
     }
 
     override fun delete(ctx: CommandContext): EmbedBuilder {
-        val oldPrefix = dbo.getDiscordPropertyValue(name(), ctx.event.guild.idLong)
+        val oldPrefix = dbo.getPropertyValue(name(), ctx.event.guild.idLong)
 
-        dbo.updateDiscordPropertyValue(name(), ctx.event.guild.idLong, "-")
+        dbo.setPropertyValue(name(), ctx.event.guild.idLong, "-")
 
         return EmbedUserSettings(ctx.event.author.asTag).setSetting(oldPrefix, "-")
     }
@@ -78,8 +78,8 @@ class SubchannelSetting : IDiscordSetting {
 
     override fun get(ctx: CommandContext): EmbedBuilder {
         val title = "Текущий канал для получения рассылки"
-        val subChannelId = dbo.getDiscordPropertyValue(name(), ctx.event.guild.idLong)
-        val prefix = dbo.getDiscordPropertyValue("prefix", ctx.event.guild.idLong)
+        val subChannelId = dbo.getPropertyValue(name(), ctx.event.guild.idLong)
+        val prefix = dbo.getPropertyValue("prefix", ctx.event.guild.idLong)
 
         val description: String = if (subChannelId == "none")
             "Не указан"
@@ -98,20 +98,20 @@ class SubchannelSetting : IDiscordSetting {
         if (calledDeleteOption(ctx.args[1]))
             return delete(ctx)
 
-        val oldSubChannelId = dbo.getDiscordPropertyValue(name(), ctx.event.guild.idLong)
+        val oldSubChannelId = dbo.getPropertyValue(name(), ctx.event.guild.idLong)
         val newSubChannelId = ctx.args[1].replace(("[^\\d.]").toRegex(), "")
         if (ctx.event.guild.getGuildChannelById(newSubChannelId) == null || newSubChannelId.isEmpty())
             return showError()
 
-        dbo.updateDiscordPropertyValue(name(), ctx.event.guild.idLong, newSubChannelId)
+        dbo.setPropertyValue(name(), ctx.event.guild.idLong, newSubChannelId)
 
         return EmbedUserSettings(ctx.event.author.asTag).setSetting(oldSubChannelId, newSubChannelId)
     }
 
     override fun delete(ctx: CommandContext): EmbedBuilder {
-        val oldSubChannelId = dbo.getDiscordPropertyValue(name(), ctx.event.guild.idLong)
+        val oldSubChannelId = dbo.getPropertyValue(name(), ctx.event.guild.idLong)
 
-        dbo.updateDiscordPropertyValue(name(), ctx.event.guild.idLong, "none")
+        dbo.setPropertyValue(name(), ctx.event.guild.idLong, "none")
 
         return EmbedUserSettings(ctx.event.author.asTag).setSetting(oldSubChannelId, "❌")
     }
@@ -132,8 +132,8 @@ class SubgroupSetting : IDiscordSetting {
 
     override fun get(ctx: CommandContext): EmbedBuilder {
         val title = "Привязанная группа"
-        val subGroup = dbo.getDiscordPropertyValue(name(), ctx.event.guild.idLong).replace("none", "Не указана")
-        val prefix = dbo.getDiscordPropertyValue("prefix", ctx.event.guild.idLong)
+        val subGroup = dbo.getPropertyValue(name(), ctx.event.guild.idLong).replace("none", "Не указана")
+        val prefix = dbo.getPropertyValue("prefix", ctx.event.guild.idLong)
 
         val fields = listOf<MessageEmbed.Field>(
             MessageEmbed.Field("Для привязки группы: ", "`${prefix}settings subgroup [ГРУППА]`", false),
@@ -147,7 +147,7 @@ class SubgroupSetting : IDiscordSetting {
         if (calledDeleteOption(ctx.args[1]))
             return delete(ctx)
 
-        val oldSubGroup = dbo.getDiscordPropertyValue(name(), ctx.event.guild.idLong)
+        val oldSubGroup = dbo.getPropertyValue(name(), ctx.event.guild.idLong)
         val requiredSubGroup = ctx.args[1]
         if (requiredSubGroup.isEmpty())
             return showError()
@@ -156,15 +156,15 @@ class SubgroupSetting : IDiscordSetting {
         if (group == "none")
             return showError()
 
-        dbo.updateDiscordPropertyValue(name(), ctx.event.guild.idLong, group)
+        dbo.setPropertyValue(name(), ctx.event.guild.idLong, group)
 
         return EmbedUserSettings(ctx.event.author.asTag).setSetting(oldSubGroup, group)
     }
 
     override fun delete(ctx: CommandContext): EmbedBuilder {
-        val oldSubGroup = dbo.getDiscordPropertyValue(name(), ctx.event.guild.idLong)
+        val oldSubGroup = dbo.getPropertyValue(name(), ctx.event.guild.idLong)
 
-        dbo.updateDiscordPropertyValue(name(), ctx.event.guild.idLong, "none")
+        dbo.setPropertyValue(name(), ctx.event.guild.idLong, "none")
 
         return EmbedUserSettings(ctx.event.author.asTag).setSetting(oldSubGroup, "❌")
     }

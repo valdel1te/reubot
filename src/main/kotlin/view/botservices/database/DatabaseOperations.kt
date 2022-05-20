@@ -1,22 +1,30 @@
-package view.botservices
+package view.botservices.database
 
-import model.data.entity.Client
-import model.data.entity.Property
-import model.service.ClientService
-import model.service.PlatformPropertyService
-import model.service.PlatformService
-import model.service.PropertyService
-import org.slf4j.LoggerFactory
+import model.data.entity.Subscribe
+import model.service.*
+import org.slf4j.Logger
 
-class DatabaseOperations {
-    private val clientService = ClientService()
-    private val platformService = PlatformService()
-    private val propertyService = PropertyService()
-    private val platformPropertyService = PlatformPropertyService()
+interface DatabaseOperations {
+    val clientService: ClientService
+        get() = ClientService()
+    val platformService: PlatformService
+        get() = PlatformService()
+    val propertyService: PropertyService
+        get() = PropertyService()
+    val platformPropertyService: PlatformPropertyService
+        get() = PlatformPropertyService()
+    val subscribeService: SubscribeService
+        get() = SubscribeService()
 
-    private val logger = LoggerFactory.getLogger(DatabaseOperations::class.java)
+    val logger: Logger
 
-    fun updateDiscordPropertyValue(
+    fun platformName(): String
+
+    fun addClient(chatId: Long)
+
+    fun resetProperties(chatId: Long)
+
+    fun setPropertyValue(
         propertyName: String,
         clientChatId: Long,
         newValue: String
@@ -30,7 +38,7 @@ class DatabaseOperations {
         logger.info("Client <$clientChatId> updated [${propertyName.uppercase()}]: [$oldValue] -> [$newValue]")
     }
 
-    fun getDiscordPropertyValue(
+    fun getPropertyValue(
         propertyName: String,
         clientChatId: Long
     ): String {
@@ -40,7 +48,7 @@ class DatabaseOperations {
         return propertyService.getValueByClientAndPlatformPropId(clientId, platformPropertyId)
     }
 
-    fun getClientDiscordProperties(clientChatId: Long): HashMap<String, String> {
+    fun getClientProperties(clientChatId: Long): HashMap<String, String> {
         val configList = HashMap<String, String>()
         val client = clientService.getByChatId(clientChatId)
         val config = propertyService.getPropertiesValues(client.id!!).toMutableList()
@@ -64,34 +72,16 @@ class DatabaseOperations {
         return configList
     }
 
-    fun addNewClient(chatId: Long) {
-        val client = Client().apply {
-            clientChatId = chatId
-        }
-
-        clientService.create(client)
-        logger.info("Created new client [${client.clientChatId}]")
-
-        // base configuration for new client
-        propertyService.apply {
-            create(Property().apply {
-                clientId = client
-                platformPropId = platformPropertyService.getByName("prefix")
-                value = "-"
-            })
-            create(Property().apply {
-                clientId = client
-                platformPropId = platformPropertyService.getByName("subchannel_id")
-                value = "none"
-            })
-            create(Property().apply {
-                clientId = client
-                platformPropId = platformPropertyService.getByName("subgroup")
-                value = "none"
-            })
-        }
-    }
-
     fun clientIsExists(chatId: Long): Boolean =
         clientService.exists("client_chat_id", chatId)
+
+    fun getSubscribeRecord(
+        chatId: Long,
+        groupName: String
+    ): Subscribe =
+        subscribeService.getRecord(
+            clientService.getByChatId(chatId).id ?: 0L,
+            platformService.getIdByName(platformName()),
+            groupName
+        )
 }

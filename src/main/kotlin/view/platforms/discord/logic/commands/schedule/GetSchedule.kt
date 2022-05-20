@@ -1,11 +1,11 @@
 package view.platforms.discord.logic.commands.schedule
 
 import kotlinx.coroutines.runBlocking
-import view.botservices.DatabaseOperations
+import view.botservices.database.DiscordDBO
 import view.botservices.DateFormatter
 import view.botservices.GroupFinder
-import view.botservices.scheduleoperations.Schedule
-import view.botservices.scheduleoperations.ScheduleApiService
+import view.botservices.schedule.Schedule
+import view.botservices.schedule.ScheduleApiService
 import view.platforms.discord.logic.services.commandmanagment.ICommand
 import view.platforms.discord.logic.services.commandmanagment.CommandContext
 import view.platforms.discord.logic.services.embeds.EmbedError
@@ -66,5 +66,5 @@ class GetSchedule : ICommand {
     }
 
     private fun subgroup(id: Long): String =
-        DatabaseOperations().getDiscordPropertyValue("subgroup", id)
+        DiscordDBO().getPropertyValue("subgroup", id)
 }

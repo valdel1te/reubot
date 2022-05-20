@@ -25,7 +25,13 @@ class ClientService() :
 }
 
 class PlatformService() :
-    AbstractHibernateService<Platform, Long>(PlatformDao(SESSION))
+    AbstractHibernateService<Platform, Long>(PlatformDao(SESSION)) {
+
+    private val platformDao = PlatformDao(SESSION)
+
+    fun getIdByName(name: String): Long =
+        platformDao.getIdByName(name)
+}
 
 class PropertyService() :
     AbstractHibernateService<Property, Long>(PropertyDao(SESSION)) {
@@ -49,4 +55,17 @@ class PlatformPropertyService() :
 
     fun getByName(name: String): PlatformProperty =
         platformPropertyDao.getByName(name)
+}
+
+class SubscribeService() :
+    AbstractHibernateService<Subscribe, Long>(SubscribeDao(SESSION)) {
+
+    private val subscribeDao = SubscribeDao(SESSION)
+
+    fun getRecord(
+        clientId: Long,
+        platformId: Long,
+        groupName: String
+    ): Subscribe =
+        subscribeDao.getRecord(clientId, platformId, groupName)
 }

@@ -3,7 +3,6 @@ package view.platforms.discord.logic.services.commandmanagment
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
-import org.hibernate.SessionFactory
 import view.platforms.discord.logic.commands.schedule.GetSchedule
 import view.platforms.discord.logic.commands.settings.GetConfig
 import view.platforms.discord.logic.commands.settings.SetSettings

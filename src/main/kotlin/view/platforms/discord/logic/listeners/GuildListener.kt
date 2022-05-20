@@ -2,10 +2,10 @@ package view.platforms.discord.logic.listeners
 
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
-import view.botservices.DatabaseOperations
+import view.botservices.database.DiscordDBO
 
 class GuildListener : ListenerAdapter() {
-    private val dbo = DatabaseOperations()
+    private val dbo = DiscordDBO()
 
     override fun onGuildJoin(event: GuildJoinEvent) {
         val guildClient = event.guild.idLong
@@ -16,6 +16,6 @@ class GuildListener : ListenerAdapter() {
         if (dbo.clientIsExists(guildClient))
             return
 
-        dbo.addNewClient(guildClient)
+        dbo.addClient(guildClient)
     }
 }

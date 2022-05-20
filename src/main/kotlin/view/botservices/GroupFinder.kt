@@ -1,10 +1,12 @@
 package view.botservices
 
-import view.botservices.scheduleoperations.GROUPS
+import view.botservices.schedule.GROUPS
 
 object GroupFinder {
+    val groups = GROUPS
+
     fun execute(input: String): String {
-        val group = GROUPS.firstOrNull { group ->
+        val group = groups.firstOrNull { group ->
             val length = input.length
 
             val index =

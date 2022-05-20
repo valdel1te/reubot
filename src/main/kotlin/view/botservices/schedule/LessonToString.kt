@@ -1,4 +1,4 @@
-package view.botservices.scheduleoperations
+package view.botservices.schedule
 
 class LessonToString {
     fun single(lesson: Lesson): String =

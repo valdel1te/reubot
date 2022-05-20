@@ -13,5 +13,6 @@
         <mapping class="model.data.entity.Platform"/>
         <mapping class="model.data.entity.PlatformProperty"/>
         <mapping class="model.data.entity.Property"/>
+        <mapping class="model.data.entity.Subscribe"/>
     </session-factory>
 </hibernate-configuration>

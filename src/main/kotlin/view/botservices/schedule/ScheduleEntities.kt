@@ -1,4 +1,4 @@
-package view.botservices.scheduleoperations
+package view.botservices.schedule
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
