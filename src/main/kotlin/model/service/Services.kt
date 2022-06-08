@@ -29,8 +29,8 @@ class PlatformService() :
 
     private val platformDao = PlatformDao(SESSION)
 
-    fun getIdByName(name: String): Long =
-        platformDao.getIdByName(name)
+    fun getByName(name: String): Platform =
+        platformDao.getByName(name)
 }
 
 class PropertyService() :
@@ -68,4 +68,7 @@ class SubscribeService() :
         groupName: String
     ): Subscribe =
         subscribeDao.getRecord(clientId, platformId, groupName)
+
+    fun getClientSubRecords(clientId: Long, platformId: Long): List<Subscribe> =
+        subscribeDao.getClientSubRecords(clientId, platformId)
 }

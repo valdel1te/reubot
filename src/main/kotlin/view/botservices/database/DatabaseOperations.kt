@@ -81,7 +81,57 @@ interface DatabaseOperations {
     ): Subscribe =
         subscribeService.getRecord(
             clientService.getByChatId(chatId).id ?: 0L,
-            platformService.getIdByName(platformName()),
+            platformService.getByName(platformName()).id ?: 0L,
             groupName
+        )
+
+    fun createSubscribeRecord(
+        chatId: Long,
+        platformName: String,
+        groupName: String
+    ) {
+        val client = clientService.getByChatId(chatId)
+        val platform = platformService.getByName(platformName)
+
+        val newSubRecord = Subscribe().apply {
+            this.clientId = client
+            platformId = platform
+            group = groupName
+            time = null
+            getUpdate = false
+        }
+
+        subscribeService.create(newSubRecord)
+
+        logger.info("Client <$chatId> sub-ed [${groupName.uppercase()}]: [TIME:null] [GET_UPD:false]")
+    }
+
+    fun editSubRecord(subRecord: Subscribe, chatId: Long) {
+        subscribeService.update(subRecord)
+
+        logger.info(
+            "Client <$chatId> update settings [${subRecord.group.uppercase()}]: [TIME:${subRecord.time}] [GET_UPD:${subRecord.getUpdate}]"
+        )
+    }
+
+    fun deleteSubRecord(
+        chatId: Long,
+        platformName: String,
+        groupName: String
+    ) {
+        val clientId = clientService.getByChatId(chatId).id!!
+        val platformId = platformService.getByName(platformName).id!!
+
+        val subRecord = subscribeService.getRecord(clientId, platformId, groupName)
+
+        subscribeService.delete(subRecord)
+
+        logger.info("Client <$chatId> unsub-ed [${groupName.uppercase()}]")
+    }
+
+    fun listClientSubRecord(chatId: Long, platformName: String): List<Subscribe> =
+        subscribeService.getClientSubRecords(
+            clientService.getByChatId(chatId).id!!,
+            platformService.getByName(platformName).id!!
         )
 }

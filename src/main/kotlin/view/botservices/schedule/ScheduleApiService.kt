@@ -12,6 +12,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CommonRequestParam(val name: String = "", val date: String = "")
 
+private val API_ADDRESS = Config.restAddress
+
 class ScheduleApiService {
     private val client: HttpClient = HttpClient(CIO) {
         install(JsonFeature) {
@@ -22,7 +24,7 @@ class ScheduleApiService {
     suspend fun getSchedule(name: String, date: String): Schedule {
         val schedule: Schedule
         runBlocking {
-            schedule = client.get("http://localhost:9090/api/schedule") {
+            schedule = client.get(API_ADDRESS) {
                 contentType(ContentType.Application.Json)
                 body = CommonRequestParam(name, date)
             }
@@ -33,7 +35,7 @@ class ScheduleApiService {
     suspend fun getCurrentSchedule(name: String): Schedule {
         val schedule: Schedule
         runBlocking {
-            schedule = client.get("http://localhost:9090/api/schedule/current") {
+            schedule = client.get(API_ADDRESS) {
                 contentType(ContentType.Application.Json)
                 body = CommonRequestParam(name)
             }

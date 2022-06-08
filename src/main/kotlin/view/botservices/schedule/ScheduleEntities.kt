@@ -25,16 +25,8 @@ val format = Json {
     encodeDefaults = true
 }
 
-val TIMINGS = arrayListOf<String>(
-    "08:30 - 10:00",
-    "10:10 - 11:40",
-    "12:10 - 13:40",
-    "14:00 - 15:30",
-    "15:40 - 17:10",
-    "17:30 - 19:00",
-    "19:10 - 20:40",
-    "20:45 - 22:15"
-)
+val TIMINGS = Config.lessonsTime
+
 //todo: список неполный
 val GROUPS = arrayListOf<String>(
     "БДо-11",

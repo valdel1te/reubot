@@ -3,6 +3,7 @@ package view.platforms.telegram.logic
 import com.github.kotlintelegrambot.Bot
 import com.github.kotlintelegrambot.dispatcher.handlers.TextHandlerEnvironment
 import com.github.kotlintelegrambot.entities.ChatId
+import com.github.kotlintelegrambot.entities.InlineKeyboardMarkup
 import com.github.kotlintelegrambot.entities.KeyboardReplyMarkup
 import com.github.kotlintelegrambot.entities.ParseMode
 import model.data.entity.Subscribe
@@ -35,6 +36,8 @@ fun startCommand(chatId: Long, bot: Bot) {
         text = "Выберите одно из предложенных действий в панели снизу",
         replyMarkup = keyboardMarkup
     )
+
+
 }
 
 fun subToGroupTextCommand(handler: TextHandlerEnvironment) {
@@ -55,17 +58,32 @@ fun backToStartTextCommand(handler: TextHandlerEnvironment) {
     startCommand(handler.message.chat.id, handler.bot)
 }
 
-fun groupSettingsTextEvent(handler: TextHandlerEnvironment) {
+fun defineGroupForScheduleTextCommand(handler: TextHandlerEnvironment) {
     val chatId = handler.message.chat.id
+    val subRecords = dbo.listClientSubRecord(chatId, dbo.platformName())
 
-    val groupName = GroupFinder.execute(handler.text)
-    if (groupName == "none") {
-        handler.bot.sendMessage(
-            ChatId.fromId(chatId),
-            "Не могу найти группу..\nПопробуйте ещё раз"
-        )
-        return
+    val messageText: String
+    val keyboardReplyMarkup: InlineKeyboardMarkup
+
+    if (subRecords.isEmpty()) {
+        messageText =
+            "У вас не выбрана ни одна группа для отслеживания. В таком случае, укажите группу, которая вас интересует"
+        keyboardReplyMarkup = buttonsGenerator.cancelSearchSchedule()
+    } else {
+        messageText = "Выберите группу из списка отслеживаемых"
+        keyboardReplyMarkup = buttonsGenerator.allSubscribedGroups(subRecords)
     }
+
+    handler.bot.sendMessage(
+        chatId = ChatId.fromId(chatId),
+        text = messageText,
+        parseMode = ParseMode.MARKDOWN,
+        replyMarkup = keyboardReplyMarkup
+    )
+}
+
+fun groupSettingsTextEvent(handler: TextHandlerEnvironment, groupName: String) {
+    val chatId = handler.message.chat.id
 
     val subscribeStatusRow: Subscribe = dbo.getSubscribeRecord(chatId, groupName);
 
@@ -77,4 +95,12 @@ fun groupSettingsTextEvent(handler: TextHandlerEnvironment) {
         parseMode = ParseMode.MARKDOWN,
         replyMarkup = inlineMarkup
     )
+}
+
+fun messageGroupOrEmpty(handler: TextHandlerEnvironment): String {
+    val groupName = GroupFinder.execute(handler.text)
+    if (groupName == "none" && !handler.message.viaBot!!.isBot)
+        return String()
+
+    return groupName
 }

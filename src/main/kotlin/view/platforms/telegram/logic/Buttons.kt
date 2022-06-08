@@ -5,7 +5,6 @@ import com.github.kotlintelegrambot.entities.keyboard.InlineKeyboardButton
 import com.github.kotlintelegrambot.entities.keyboard.KeyboardButton
 import model.data.entity.Subscribe
 import view.botservices.GroupFinder
-import view.botservices.database.TelegramDBO
 
 class Buttons {
     private val groups = GroupFinder.groups
@@ -29,7 +28,8 @@ class Buttons {
 
         groups.forEach { group ->
             row.add(KeyboardButton(group))
-            if (row.size == 4) { // max button count in a row = 8, but 8 it's too much for phone with small screen
+
+            if (row.size == 4) { // max button count in a row = 8, but 8 it's too much for phones with small screen
                 buttons.add(row.toList())
                 row.clear()
             }
@@ -46,15 +46,15 @@ class Buttons {
         if (subStatus.group == "none") {
             subStatusButton = Pair(names.SUB_OFF, cbNames.SUB_OFF)
             timeButton = Pair("Время: не указано", cbNames.TIME_EDIT)
-            getUpdates = Pair(names.UPDATES_OFF, cbNames.SUB_OFF)
+            getUpdates = Pair(names.UPDATES_OFF, cbNames.UPDATES_EDIT)
         } else {
             subStatusButton = Pair(names.SUB_ON, cbNames.SUB_ON)
             timeButton = Pair("Время: ${subStatus.time ?: "не указано"}", cbNames.TIME_EDIT)
             getUpdates =
                 if (subStatus.getUpdate)
-                    Pair(names.UPDATES_ON, cbNames.UPDATES_ON)
+                    Pair(names.UPDATES_ON, cbNames.UPDATES_EDIT)
                 else
-                    Pair(names.UPDATES_OFF, cbNames.UPDATES_OFF)
+                    Pair(names.UPDATES_OFF, cbNames.UPDATES_EDIT)
         }
 
         return InlineKeyboardMarkup.create(
@@ -63,4 +63,28 @@ class Buttons {
             listOf(InlineKeyboardButton.CallbackData(getUpdates.first, getUpdates.second))
         )
     }
+
+    fun allSubscribedGroups(records: List<Subscribe>): InlineKeyboardMarkup {
+        val buttons = mutableListOf<List<InlineKeyboardButton>>()
+        val row = mutableListOf<InlineKeyboardButton>()
+
+        records.forEachIndexed { index, record ->
+            row.add(InlineKeyboardButton.CallbackData(record.group, cbNames.SUB_GROUP_SCHEDULE))
+
+            if (row.size == 3) {
+                buttons.add(row.toList())
+                row.clear()
+            }
+
+            if (index == records.lastIndex)
+                buttons.add(row.toList())
+        }
+
+        return InlineKeyboardMarkup.create(buttons.toList())
+    }
+
+    fun cancelSearchSchedule(): InlineKeyboardMarkup =
+        InlineKeyboardMarkup.create(
+            listOf(InlineKeyboardButton.CallbackData(names.CANCEL_SCHEDULE_SEARCH, cbNames.CANCEL_SCHEDULE_SEARCH))
+        )
 }

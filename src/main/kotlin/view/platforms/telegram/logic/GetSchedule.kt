@@ -14,6 +14,8 @@ class GetSchedule(private val groups: List<String>) {
                 schedule = ScheduleApiService().getSchedule(group, date)
             }
 
+            sb.append("*$group, $date*\n\n")
+
             schedule.lessons.zip(TIMINGS).forEach { pair ->
                 val timing = pair.second
                 val lesson = LessonMapper()
@@ -21,7 +23,7 @@ class GetSchedule(private val groups: List<String>) {
                     .replace("-", "")
                     .replace("+", "➕")
 
-                sb.append("[$timing] $lesson\n")
+                sb.append("`[$timing]` |  $lesson\n")
             }
 
             scheduleList.add(sb.toString().trimIndent())

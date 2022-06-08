@@ -15,12 +15,8 @@ object GroupFinder {
                 else
                     3
 
-            group.lowercase().contains(input.substring(0, index).lowercase()) && group.contains(
-                input.substring(
-                    length - 2,
-                    length - 1
-                )
-            )
+            group.lowercase().contains(input.substring(0, index).lowercase())
+                    && group.contains(input.substring(length - 2, length))
         } ?: "none"
 
         return group

@@ -1,12 +1,12 @@
 package view.botservices
 
 import net.dv8tion.jda.api.EmbedBuilder
+import view.botservices.database.DatabaseOperations
 import view.botservices.database.DiscordDBO
 import view.platforms.discord.logic.services.commandmanagment.CommandContext
 
 interface ISetting {
-    val dbo: DiscordDBO
-        get() = DiscordDBO()
+    val dbo: DatabaseOperations
 
     fun name(): String
 
@@ -14,6 +14,9 @@ interface ISetting {
 }
 
 interface IDiscordSetting : ISetting {
+    override val dbo: DatabaseOperations
+        get() = DiscordDBO()
+
     fun aliases(): List<String>
 
     fun get(ctx: CommandContext): EmbedBuilder

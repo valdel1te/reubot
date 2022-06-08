@@ -29,20 +29,19 @@ class ClientDao(sessionFactory: SessionFactory) :
 class PlatformDao(sessionFactory: SessionFactory) :
     AbstractHibernateDao<Platform, Long>(sessionFactory, Platform()) {
 
-    fun getIdByName(name: String): Long {
-        val platform = Platform()
+    fun getByName(name: String): Platform {
         try {
             sessionFactory.openSession().use { session ->
                 val hql = "from Platform p where p.name = '$name'"
                 val query = session.createQuery(hql)
 
-                platform.id = (query.singleResult as Platform).id
+                val platform = query.singleResult as Platform
+                session.close()
+                return platform
             }
         } catch (e: NoResultException) {
-            platform.id = 0L
+           return Platform().apply { id = 0L }
         }
-
-        return platform.id!!
     }
 }
 
@@ -145,6 +144,20 @@ class SubscribeDao(sessionFactory: SessionFactory) :
             }
         } catch (e: NoResultException) {
             return Subscribe().apply { group = "none" }
+        }
+    }
+
+    fun getClientSubRecords(clientId: Long, platformId: Long): List<Subscribe> {
+        try {
+            sessionFactory.openSession().use { session ->
+                val hql = "from Subscribe s " +
+                        "where s.clientId = $clientId and s.platformId = $platformId"
+                val query = session.createQuery(hql)
+
+                return query.resultList as List<Subscribe>
+            }
+        } catch (e: NoResultException) {
+            return listOf()
         }
     }
 }
